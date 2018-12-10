@@ -10,27 +10,44 @@ namespace roman.numerals
         private readonly Dictionary<int, string> _map = new Dictionary<int, string>
         {
             { 1, "I" },
-            { 4, "IV" },
             { 5, "V" },
-            { 9, "IX" },
             { 10, "X" },
-            { 40, "XL" },
             { 50, "L" },
-            { 90, "XC" },
             { 100, "C" },
-            { 400, "CD" },
             { 500, "D" },
-            { 900, "CM" },
             { 1000, "M" }
         };
         private readonly List<int> _checkpoints = null;
 
         public Roman()
         {
+            CreateLowerboundCheckpoints();
+
             _checkpoints = _map
                     .Keys
                     .OrderByDescending(x => x)
                     .ToList();
+        }
+
+        private void CreateLowerboundCheckpoints()
+        {
+            var newMaps = new List<KeyValuePair<int, string>>();
+            foreach (var map in _map)
+            {
+                var lowerThanMe = _map
+                    .Where(m => m.Key < (map.Key / 2))
+                    .OrderByDescending(m => m.Key)
+                    .FirstOrDefault();
+
+                if (lowerThanMe.Key == 0) continue;
+                
+                newMaps.Add(new KeyValuePair<int, string>(map.Key - lowerThanMe.Key, $"{lowerThanMe.Value}{map.Value}"));
+            }
+
+            foreach (var newMap in newMaps)
+            {
+                _map.Add(newMap.Key, newMap.Value);
+            }
         }
 
         public string ToRomanNumerals(int decimalValue)
