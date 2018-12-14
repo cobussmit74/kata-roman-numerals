@@ -91,7 +91,7 @@ namespace roman.numerals
             var charSummary = CountConsecutiveCharacters(romanNumerals);
             if (charSummary.Any(c => c.Count > 3))
             {
-                throw new ArgumentOutOfRangeException(nameof(romanNumerals), $"Ivalid numeral combination");
+                throw new ArgumentOutOfRangeException(nameof(romanNumerals), $"Invalid numeral combination");
             }
 
             var totalValue = 0;
