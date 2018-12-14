@@ -88,6 +88,12 @@ namespace roman.numerals
 
         public int ToInteger(string romanNumerals)
         {
+            var charSummary = CountConsecutiveCharacters(romanNumerals);
+            if (charSummary.Any(c => c.Count > 3))
+            {
+                throw new ArgumentOutOfRangeException(nameof(romanNumerals), $"Ivalid numeral combination");
+            }
+
             var totalValue = 0;
             var index = 0;
             while (index < romanNumerals.Length)
@@ -96,12 +102,12 @@ namespace roman.numerals
                 var doubleNumeral = (index + 1 < romanNumerals.Length)
                     ? romanNumerals.Substring(index, 2)
                     : "";
-                
+
                 if (_mapRomanToDecimal.TryGetValue(doubleNumeral, out var doubleValue))
                 {
                     totalValue += doubleValue;
                     index += 2;
-                } 
+                }
                 else if (_mapRomanToDecimal.TryGetValue(singleNumeral, out var singleValue))
                 {
                     totalValue += singleValue;
@@ -112,8 +118,39 @@ namespace roman.numerals
                     throw new ArgumentOutOfRangeException(nameof(romanNumerals), $"{singleNumeral} is not a valid numeral");
                 }
             }
-            
+
             return totalValue;
+        }
+
+        private List<(char Character, int Count)> CountConsecutiveCharacters(string romanNumerals)
+        {
+            var results = new List<(char, int)>();
+            char currentCharacter = '\0';
+            int count = 0;
+            foreach (var numeral in romanNumerals)
+            {
+                if (currentCharacter == numeral)
+                {
+                    count++;
+                }
+                else
+                {
+                    if (currentCharacter != '\0')
+                    {
+                        results.Add((currentCharacter, count));
+                    }
+
+                    currentCharacter = numeral;
+                    count = 1;
+                }
+            }
+
+            if (currentCharacter != '\0')
+            {
+                results.Add((currentCharacter, count));
+            }
+
+            return results;
         }
     }
 }

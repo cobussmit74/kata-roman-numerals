@@ -146,8 +146,7 @@ namespace roman.numerals.tests
                 //assert
                 Assert.That(actual, Is.EqualTo(0));
             }
-
-
+            
             [Test]
             public void GivenInvalidString_Throws()
             {
@@ -156,6 +155,18 @@ namespace roman.numerals.tests
                 //act
                 //assert
                 Assert.That(() => roman.ToInteger("FOOBAR"), Throws.TypeOf<ArgumentOutOfRangeException>()
+                    .With.Property(nameof(ArgumentOutOfRangeException.ParamName))
+                    .EqualTo("romanNumerals"));
+            }
+
+            [Test]
+            public void GivenInvalidCombination_Throws()
+            {
+                //arrange
+                var roman = new Roman();
+                //act
+                //assert
+                Assert.That(() => roman.ToInteger("IIII"), Throws.TypeOf<ArgumentOutOfRangeException>()
                     .With.Property(nameof(ArgumentOutOfRangeException.ParamName))
                     .EqualTo("romanNumerals"));
             }
